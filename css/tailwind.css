@@ -33,3 +33,10 @@ input:-webkit-autofill:focus {
 .katex-display {
   overflow: auto hidden;
 }
+
+@media only screen and (max-width: 600px) {
+  .featureSpecs tr>td:first-child{
+    width: 30%;
+    word-break: keep-all;
+  }
+}

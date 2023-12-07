@@ -1,0 +1,319 @@
+---
+title: 'Trolio(트롤리오) 기획/디자인/개발/배포 후기'
+date: '2023-5'
+tags: ['토이프로젝트', 'React', 'StyledComponent', 'netlify', 'chartjs']
+draft: false
+summary: '영상번역가/감수자를 위한 대시보드&포트폴리오 앱을 기획/디자인/개발/배포한 후기입니다.'
+authors: ['default']
+layout: PostSimple
+---
+
+
+
+![trolio-main-banner](/static/images/trolio-main.png)
+
+## 목차
+
+<TOCInline toc={props.toc} exclude="목차" toHeading={3} />
+
+## 기획
+
+Trolio는 번역(Translation)과 포트폴리오(Portfolio)를 합친 말입니다. 번역+대시보드+포트폴리오 기능을 모두 담고 싶어 고민하다가 길이를 고려해 간결하게 만들게 됐어요.  
+프리랜서 영상번역가 시절 주요 거래처에서 작업물과 담당 작가의 정보를 기록하고 공유하는 데이터베이스로 [Airtable](https://www.airtable.com/)을 사용했습니다. 당시에도 Airtable엔 함수로 제약 조건을 지정해 특정 데이터만 필터링하는 방법이 있긴 했지만 UX가 좀 더 직관적이면 어떨까 하는 아쉬움이 있었습니다. 또 테이블 데이터를 차트와 그래프로 변환하는 확장 플러그인을 2개 이상 사용하려면 멤버십을 업그레이드 해야 했죠.
+
+<figure>
+    <img src="/static/images/airtable-ui.png"
+         alt=""/>
+    <figcaption>사용에 불편을 느꼈던 Airtable UI. 오른쪽 확장 플러그인을 2개 이상 추가하려면 멤버십을 업그레이드 해야 한다.</figcaption>
+</figure>
+
+그때의 기억이 떠올라 Airtable API를 이용해 작업 기록을 쉽게 검색하고 시각화할 수 있는 앱을 만들어보고 싶었습니다. 주 단위, 월 단위, 연 단위 혹은 특정 기간 단위로 작업 유형, 작업물 종류, 형태, 수입 등이 한 눈에 들어오게 대시보드에 표시하고 포트폴리오에선 NDA(비밀유지조약)를 지키는 선에서 작업물 정보를 포스터와 함께 보기 좋게 정렬하고 찾을 수 있도록요. 구체적인 요구 사항은 다음과 같았습니다.  
+
+### 요구사항  
+<table>
+  <tbody>
+    <tr>
+      <td>
+        <h4>기능</h4>
+        <ul>
+          <li>선택한 날짜, 기간에 따라 작업 항목을 차트, 그래프로 확인할 수 있어야 한다.</li>
+          <li>작업물 목록을 포스터 이미지로 볼 수 있어야 한다.</li>
+          <li>작업물의 제목을 검색할 수 있어야 한다.</li>
+          <li>작업물을 특정 항목으로 필터링할 수 있어야 한다.</li>
+          <li>작업물 상세 페이지 간에 이동할 수 있어야 한다.</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <h4>사용성</h4>
+        <ul>
+          <li>UI/UX가 직관적이고 사용하기 쉬워야 한다.</li>
+          <li>모바일 및 데스크톱 버전에서 모두 사용 가능하도록 반응형으로 구현한다.</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <h4>성능</h4>
+        <ul>
+          <li>홈페이지 로딩 시간이 3초 이내여야 한다.</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <h4>보안</h4>
+        <ul>
+          <li>Airtable API Key를 노출하지 않아야 한다.</li>
+          <li>XSS, XSRF 등의 보안 취약점이 없어야 한다.</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <h4>호환성</h4>
+        <ul>
+          <li>최신 버전의 Chrome, Firefox, Safari, Edge, IE 등 대부분의 브라우저에서 사용 가능해야 한다.</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+  
+### 기능 명세서  
+<table className='featureSpecs'>
+  <tbody>
+    <tr>
+        <td>
+            <h4>대시보드</h4>
+        </td>
+    </tr>
+    <tr>
+      <td>A 또는 A, B 날짜 입력</td>
+      <td>비교할 기간의 날짜를 입력받는다.</td>
+    </tr>
+    <tr>
+      <td>A 기간 선택</td>
+      <td>이번 달, 지난달, 3개월 전, 6개월 전, 1년 전 항목 중 선택받는다.</td>
+    </tr>
+    <tr>
+      <td>A, B 기간 선택</td>
+      <td>지난주-이번 주, 지난달-이번 달, 1/4분기-2/4분기, 상반기-하반기, 작년-올해 항목 중 선택받는다.</td>
+    </tr>
+    <tr>
+      <td>작업 유형</td>
+      <td>번역, 감수 작업 수를 차트로 비교</td>
+    </tr>
+    <tr>
+      <td>작업물 카테고리</td>
+      <td>쇼(드라마, 리얼리티), 영화, 다큐멘터리 수를 차트로 비교</td>
+    </tr>
+    <tr>
+      <td>작업물 형태</td>
+      <td>더빙, 자막 수를 차트로 비교</td>
+    </tr>
+    <tr>
+        <td>
+            <h4>포트폴리오</h4>
+        </td>
+    </tr>
+    <tr>
+      <td>검색</td>
+      <td>검색어를 입력받아 검색어가 제목에 포함된 작업물 목록을 조회할 수 있다.</td>
+    </tr>
+    <tr>
+      <td>필터</td>
+      <td>작업 유형, 작업물 형태, 작업물 종류, 플랫폼을 기준으로 작업물 목록을 조회할 수 있다.</td>
+    </tr>
+    <tr>
+      <td>상세 보기</td>
+      <td>작업물 포스터 이미지 클릭 시 상세 정보가 표시된다. 이동 버튼을 누르면 해당 순서 페이지로 넘어간다.</td>
+    </tr>
+  </tbody>
+</table>
+
+## 디자인
+
+
+## 아키텍처
+
+![trolio-architecture](/static/images/trolio-architecture.png)
+
+useEffect의 의존성 배열을 비워 App 컴포넌트가 마운트 되었을 때 Netlify 서버리스 함수를 이용해 .env에서 받아온 API key와 base로 Airtable API와 연결 후 임시 테이블 베이스의 데이터를 불러와 jobs state 값을 갱신합니다. 그렇게 갱신한 jobs state를 자식 컴포넌트인 Dashboard, Portfolio, PortfolioPage에 props로 전달하여 각 컴포넌트의 로직을 구현합니다.
+
+## 스택
+처음으로 기획, 디자인, 구현을 단독으로 주도해 프로젝트를 진행하면서 가장 중점에 두었던 것은 ‘어떻게든 일단 배포하기’였습니다. 혼자 구현하는 만큼 기능 추가에 욕심이 생겨서 배포가 늦어질 가능성이 높았기 때문에 ‘완벽보단 완성’, ‘완성 후 보완’을 목표로 했죠. 그래서 스택도 러닝 커브가 낮고 추가 작업이 복잡하지 않은 것 위주로 선택했습니다. 
+
+### CRA React  
+CRA React는 무엇보다 프로젝트 초기 설정과 설정 파일을 직접 구성할 필요가 없고 웹팩, Babel 설정 등을 자동으로 관리해주기 때문에 개발을 빠르게 진행하는 데 용이했습니다.
+
+### Chart.js  
+데이터 시각화 라이브러리인 Chart.js는 D3.js를 두고 선택을 고민했습니다. D3.js는 시각화 요소를 직접 다룰 수 있는 맞춤화 기능이 많고 대용량 데이터셋 처리에 유리하다는 장점이 있었죠. 하지만 Trolio엔 간단한 차트가 필요한 상황이라 결국 사용이 더 직관적이고 기본 템플릿을 제공하는 Chart.js를 선택하게 됐습니다.
+
+### React Styled Components  
+물론 새로 배워 적용한 스택도 있었습니다. 기존엔 기본 CSS나 Tailwind CSS만을 사용해본 상태라 컴포넌트 기반에 동적 스타일링이 가능하다는 점이 장점으로 꼽히는 CSS-in-JS를 적용해보고 싶었습니다. 그중 최근까지 높은 사용도, 활성화된 커뮤니티, 최신 업데이트 기준을 충족하는 React Styled Components를 선택했는데 자바스크립트로 스타일을 정의하다보니 번들 크기가 증가하긴 했지만 다음과 같이 프로퍼티와 변수를 사용해 동적으로 스타일링할 수 있는 장점이 훨씬 커 개발 경험이 만족스러웠습니다.
+
+```
+animation: ${upwards} 0.6s ease-in;
+  &.bgImage {
+    background-image: url('${(props) => props.src}');
+  }
+
+&::after {
+    content: ${(props) =>
+      `"${props.title} \\00000a ${props.workForm}•${props.jobType}"`};
+	}
+```
+
+## 문제 해결
+### 보안 
+Netlify 서버리스 함수를 이용해 클라이언트에서 API Key 감추기
+Trolio는 서버 없이 리액트 기반 클라이언트만으로 구현한 만큼 API Key를 .env나 dotenv에 저장했을 때 .gitignore 파일을 통해 깃허브 업로드를 막을 수는 있지만 빌드 시에 번들 파일에 포함되기 때문에 배포하고 나면 개발자 도구 리소스 파일 목록이나 네트워크 항목에서 접근할 수 있다는 보안 문제가 있었습니다.
+대표적인 해결책으로 ‘프록시 서버 빌드+Heroku 배포’와 ‘Netlify 서버리스 함수+Netlify 배포’ 2가지를 찾았고 한 가지 서비스로 배포까지 해결할 수 있는 후자를 선택했습니다. 
+Netlify 함수를 사용하면 AWS의 서버리스 Lambda 함수를 간접적으로 이용해 전용 서버 없이도 서버 측 코드를 실행할 수 있다는 장점이 있어 API에서 데이터 가져오기, 동적 이미지 반환, 자동화 이메일 전송에 주로 쓰입니다. 
+Trolio에서는 Netlify 프로젝트 대시보드의 Site settings > Environment variables에 .env의 변수와 값을 추가하고 다음처럼 netlify > functions 폴더 안에 함수를 생성하여 사용할 컴포넌트 안에서 호출했습니다. 
+```
+//netlify/functions/getRecords.js
+const { REACT_APP_AIRTABLE_API_KEY, REACT_APP_BASE } = process.env;
+
+exports.handler = async (event, context) => {
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      key: REACT_APP_AIRTABLE_API_KEY,
+      base: REACT_APP_BASE,
+    }),
+  };
+};
+```  
+```
+//App.js
+useEffect(() => {
+    async function fetchKey() {
+      const url = `/.netlify/functions/getRecords`;
+      try {
+        const secrets = await fetch(url).then((res) => res.json());
+        const base = new Airtable({
+          apiKey: secrets.key,
+        }).base(secrets.base)('July');
+        base
+          .select({
+            view: 'Grid view',
+            sort: [
+              {
+                field: 'title',
+                direction: 'asc',
+              },
+              {
+                field: 'deadline',
+                direction: 'asc',
+              },
+            ],
+          })
+          .eachPage((records, fetchNextPage) => {
+            setJobs(records);
+            fetchNextPage();
+          });
+      } catch (err) {
+        let error = {
+          statusCode: err.statusCode || 500,
+          body: JSON.stringify({ error: err.message }),
+        };
+        console.log(error);
+      }
+    }
+    fetchKey();
+  }, []);
+```
+
+### 성능  
+Chrome DevTools Lighthouse 도구로 성능을 측정해서 점수가 낮은 항목을 개선해봤습니다.  
+
+**코드 분할과 동적 불러오기로 로딩 시간 최적화**  
+webpack을 통해 번들링된 자바스크립트 파일의 용량이 크고 다운로드가 오래 걸리면 다운로드가 완료된 후에나 화면을 그릴 수 있기 때문에 화면도 늦게 뜨는 문제가 있습니다. Trolio도 마찬가지 문제를 안고 있어 ‘프론트엔드 성능 최적화 가이드’라는 학습서(p.42-p.54)를 참고하여 리액트가 제공하는 함수인 lazy, Suspense를 이용해 코드 분할과 지연 로딩 기법을 적용했습니다.
+
+```
+//App.js
+import React, { Suspense, lazy } from 'react';
+
+const LandingPage = lazy(() => import('./components/LandingPage'));
+const Dashboard = lazy(() => import('./components/dashboard/Dashboard'));
+const Portfolio = lazy(() => import('./components/portfolio/Portfolio'));
+
+
+return (
+        <Suspense
+        fallback={
+            <div>
+            Loading...
+            </div>
+        }
+        >
+            <Routes>
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/dashboard" element={<Dashboard jobs={jobs} />} />
+                <Route path="/portfolio" element={<Portfolio jobs={jobs} />} />
+                <Route
+                path="/portfolio/:pId"
+                element={<PortfolioPage jobs={jobs} />}
+                />
+                <Route path="/notfound" element={<Outlet />} />
+                <Route path="*" element={<Navigate to="/notfound" replace />} />
+            </Routes>
+        </Suspense>
+	)
+```  
+
+코드 분할은 번들 파일을 페이지별 혹은 모듈별로 여러 파일로 쪼개 필요할 때마다 다운로드 및 로드하는 방식으로 Trolio의 경우 App.js에서는 LandingPage, Dashboard, Portfolio 3가지 페이지별로, Dashboard.js, Portfolio.js에서는 모듈별로 분할 및 동적 불러오기 하여 해당 페이지에 접근할 때 컴포넌트를 로드하여 다음처럼 약 1.3초 정도 로딩 시간을 단축할 수 있었습니다.  
+
+<figure>
+    <img src="/static/images/reduceJSExecutionTime1.png"
+         alt=""/>
+    <figcaption>코드 분할 전 Dashboard 페이지의 Chrome DevTools Lighthouse JavaScript 실행 시간 평가 이미지</figcaption>
+</figure>
+<figure>
+    <img src="/static/images/reduceJSExecutionTime2.png"
+         alt=""/>
+    <figcaption>코드 분할 후 Dashboard 페이지의 Chrome DevTools Lighthouse의 Javascript 실행 시간 평가 이미지</figcaption>
+</figure>
+
+**Cloudinary, ConvertAPI, MAKE를 이용해 JPEG 이미지 형식을 WebP 형식으로 변환**  
+현재 Trolio의 데이터는 Airtable 베이스의 임시 데이터입니다. Airtable 자체 확장 플러그인인 Web Clipper를 이용해 미디어 정보 검색 서비스 imdb.com에서 작품 제목과 포스터 이미지를 Airtable의 베이스 셀로 수집했는데 이미지 형식이 JPEG이다 보니 다음과 같은 평가가 떴습니다.  
+```
+Serve images in next-gen formats
+Image formats like WebP and AVIF often provide better compression than PNG or JPEG, 
+which means faster downloads and less data consumption.
+```  
+WebP는 무손실 압축과 손실 압축을 모두 제공하는 이미지 포맷으로 PNG보다 26%, JPG보다 효율이 25~34%  정도 높아 웹페이지 로드 속도를 향상시킬 수 있는 데다 파일 크기가 작은데도 높은 화질을 유지한다고 해서 사용자 경험 개선과 SEO 향상을 위해 변환하기로 했습니다. 
+
+
+![make-api-image](/static/images/make-api.png "MAKE로 API를 연결해 형식 변환과 필드 입력을 자동화하는 모습")
+
+이미지를 일일이 다운로드, 업로드하지 않고 파일 형식을 변경할 방법을 찾던 중 앱 사이의 API 연결을 통해 다양한 작업을 자동화 해주는 MAKE를 발견했습니다. 덕분에 Airtable의 이미지를 ConvertAPI를 거쳐 WebP 형식으로 변환 후 클라우드 기반 이미지 저장 서비스인 Cloudinary에 저장, 각 이미지의 URL을 Airtable의 URL 필드에 입력한 결과, 해당 평가는 사라졌고 아래처럼 최적화 전엔 다운로드에 대략 2초가 걸린 반면 최적화 후엔 대략 700밀리초가 걸렸습니다.
+
+<figure>
+    <img src="/static/images/airtable-jpeg.jpg"
+         alt=""/>
+    <figcaption>최적화 전 jpeg로 로드했을 때의 네트워크 탭 이미지</figcaption>
+</figure>
+<figure>
+    <img src="/static/images/airtable-webp.jpg"
+         alt=""/>
+    <figcaption>최적화 후 WebP로 로드했을 때의 네트워크 탭 이미지</figcaption>
+</figure>
+
+## 마치며
+현재 Trolio는 API로 임시 데이터를 가져와 데모 삼아 구현한 알파 버전이라 아직 사용자가 회원가입, 로그인/아웃을 할 수는 없지만 기존 Airtable보다 사용성을 높여 데이터 조회를 간편화하는 목표에는 가까워진 것 같습니다. 
+  <figure>
+      <img src="/static/images/airtable-filter-ui2.gif"
+           alt=""/>
+      <figcaption>Airtable 필터 기능으로 QC + SUB + METFLIX 해당 데이터 걸러내기</figcaption>
+  </figure>
+  <figure>
+      <img src="/static/images/trolio-filter-ui.gif"
+           alt=""/>
+      <figcaption>Trolio 필터 기능으로 QC + SUB + METFLIX 해당 데이터 걸러내기</figcaption>
+  </figure>
+
+실제 사용자 설문을 통해 수요가 높은 기능을 조사해야겠지만 베타 버전에선 회원가입, 로그인/아웃은 물론 Airtable, Google SpreadSheet, Excel과 연동 및 불러오기/내보내기, PDF 추출, NDA를 감안한 일부 데이터 감추기, 링크 공유하기 등 추가하고 싶은 기능이 많습니다. 주로 사용해 익숙한 데다 빠른 구현으로 자신감을 얻고 싶어 선택한 CRA React만으로 구현한 상황이지만 추후 확장을 위해 서버와 상태 관리 라이브러리도 추가할 계획입니다. 애초에 확장을 고려해 설계했다면 좋겠지만 이러한 경험이 훗날 프로젝트 환경 이전 업무에 도움이 되리라 믿습니다. 망치를 들면 죄다 못으로 보인다고 했던가요? 분명 배포 직전까지도 두더지 잡듯 버그를 고치고 리팩토링을 했는데도 코드가 장황해 보이고 컴포넌트 단위로 더 분리해야 할 것 같습니다. 단독 프로젝트에선 취향의 문제가 될 수 있지만 팀 프로젝트에서는 가독성과 유지보수성 문제를 고려해야 하니까요. 앞으로 이 점에 집중해 경험을 거듭하며 추상성을 높일 것인지 양은 많아도 동작을 숨기기보다 명시적으로 드러낼 것인지 판단하는 눈을 길러 프로젝트에 적용해야겠습니다.

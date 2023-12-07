@@ -1,0 +1,276 @@
+---
+title: 'IA SNAP(이아스냅) 기획/디자인/개발/배포 후기'
+date: '2023-11'
+tags: ['홈페이지', 'Next.js', 'TypeScript', 'pnpm', 'Supabase', 'vercel', 'framer motion']
+draft: false
+summary: '아이폰 스냅업체 이아스냅 홈페이지를 기획/디자인/개발/배포한 후기입니다.'
+authors: ['default']
+layout: PostSimple
+---
+![iasnap-main-banner](/static/images/iasnap-main.webp)
+
+<div style={{display: "flex", gap: "1rem", marginBottom: "1rem"}}>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+      <path d="M13.0605 8.11073L14.4747 9.52494C17.2084 12.2586 17.2084 16.6908 14.4747 19.4244L14.1211 19.778C11.3875 22.5117 6.95531 22.5117 4.22164 19.778C1.48797 17.0443 1.48797 12.6122 4.22164 9.87849L5.63585 11.2927C3.68323 13.2453 3.68323 16.4112 5.63585 18.3638C7.58847 20.3164 10.7543 20.3164 12.7069 18.3638L13.0605 18.0102C15.0131 16.0576 15.0131 12.8918 13.0605 10.9392L11.6463 9.52494L13.0605 8.11073ZM19.778 14.1211L18.3638 12.7069C20.3164 10.7543 20.3164 7.58847 18.3638 5.63585C16.4112 3.68323 13.2453 3.68323 11.2927 5.63585L10.9392 5.98941C8.98653 7.94203 8.98653 11.1079 10.9392 13.0605L12.3534 14.4747L10.9392 15.8889L9.52494 14.4747C6.79127 11.741 6.79127 7.30886 9.52494 4.57519L9.87849 4.22164C12.6122 1.48797 17.0443 1.48797 19.778 4.22164C22.5117 6.95531 22.5117 11.3875 19.778 14.1211Z"></path>
+</svg>
+<a href="https://iasnap.vercel.app" target="_blank" rel="noopener noreferrer">이아스냅 홈페이지</a>
+</div>
+
+<div style={{display: "flex", gap: "1rem"}}>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+      <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"></path>
+</svg>
+<a href="https://github.com/dev-rong/iasnap" target="_blank" rel="noopener noreferrer">이아스냅 GitHub 저장소</a>
+</div>
+
+## 목차
+
+<TOCInline toc={props.toc} exclude="목차" toHeading={3} />
+
+## 기획
+아이폰 스냅 업체 이아스냅을 운영하는 지인의 부탁으로 홈페이지를 만들게 됐습니다. 
+1차 기획은 기존의 이아스냅 블로그에서 홍보에 사용 중이던 업체, 작가, 상품 소개를 비롯해 샘플 사진을 찾아 보기 쉽게 구성하는 식이었습니다.
+하지만 1차 기획 후 디자인, 개발까지 어느 정도 마친 상태에서
+블로그로는 커스텀하게 구성하기 어려운 포트폴리오 사진 전시, 탐색 기능을 홈페이지에서 구현하는 방향으로 기획을 변경하게 됐습니다. 
+기존 것을 갈아엎는 수준의 대대적인 변화였지만 결국 2차 기획대로 다시 만들게 됐죠.
+토이 프로젝트 외의 작업은 처음이었지만 클라이언트와 지속적으로 소통하며 요구사항과 피드백을 반영, 조율하는 경험을 할 수 있었습니다.
+<div className="flex flex-col gap-4 md:flex-row items-center w-full">
+    <img src="/static/images/iasnap-client.webp" alt="이아스냅 클라이언트의 홈페이지 제작 요구사항" className="my-0"/>
+    <img src="/static/images/iasnap-client2.webp" alt="이아스냅 클라이언트의 홈페이지 제작 요구사항" className="my-0"/>
+</div>
+
+### 요구사항
+<table>
+  <tbody>
+    <tr>
+      <td>
+        <h4>기능</h4>
+        <ul>
+          <li>스냅 사진 작가의 포트폴리오 샘플 사진을 최대한 화질 그대로 많이 보여줄 수 있어야 한다.</li>
+          <li>보정 전후 사진을 쉽게 비교할 수 있어야 한다.</li>
+          <li>결혼식 스냅 사진은 예식장별로 확인할 수 있어야 한다.</li>
+          <li>제휴 업체 소개 페이지를 포함해야 한다.</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <h4>사용성</h4>
+        <ul>
+          <li>주요 예상 사용자가 모바일로 접근할 가능성이 높으므로 UI/UX를 모바일 중심이되 태블릿, 데스크톱에서도 사용 가능하게 반응형으로 구현한다.</li>
+          <li>갤러리 형식으로 만들어 이미지에 쉽게 접근할 수 있게 한다.</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <h4>디자인</h4>
+        <ul>
+          <li>이아스냅이 기존에 사용하던 로고와 브랜드 컬러에 맞춰 통일감 있게 디자인한다.</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <h4>성능</h4>
+        <ul>
+          <li>다수의 이미지가 화질 깨짐 없이 빠르게 로드돼야 한다.</li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+### 기능명세서
+<table className='featureSpecs'>
+  <tbody>
+    <tr>
+        <td>
+            <h4>Gallery - 메인</h4>
+        </td>
+    </tr>
+    <tr>
+      <td>텍스트 검색창</td>
+      <td>지역, 스튜디오, 예식장 이름을 검색어로 입력받아 이미지를 필터링한다.</td>
+    </tr>
+    <tr>
+      <td>전체/리허설/본식 셀렉트</td>
+      <td>셀렉트 옵션에 따라 이미지를 필터링한다.</td>
+    </tr>
+    <tr>
+      <td>전체/스튜디오 스냅/가봉 스냅/밝은 홀/어두운 홀 버튼</td>
+      <td>버튼에 해당하는 분류에 따라 이미지를 필터링한다.</td>
+    </tr>
+    <tr>
+      <td>이미지 필터링 결과 숫자</td>
+      <td>사용자가 탐색할 정보량을 미리 알 수 있도록 필터링된 이미지 결과 수를 상단에 표시한다.</td>
+    </tr>
+    <tr>
+      <td>이미지</td>
+      <td>리허설/본식 여부, 지역, 스튜디오, 예식장 이름과 함께 그리드 형식으로 표시한다.</td>
+    </tr>
+    <tr>
+        <td>
+            <h4>Before & After - 보정 전후 사진 비교</h4>
+        </td>
+    </tr>
+    <tr>
+        <td>보정 전후 사진 비교 슬라이드</td>
+        <td>중앙의 슬라이드 바를 왼쪽, 오른쪽으로 이동하며 보정 전후 사진을 비교 가능하게 한다.</td>
+    </tr>
+     <tr>
+        <td>
+            <h4>파트너 - 제휴 업체 소개</h4>
+        </td>
+    </tr>
+    <tr>
+        <td>제휴 업체 소개 텍스트, 이미지</td>
+        <td>제휴 업체 SNS 링크, 할인 혜택 내용을 이미지와 표시한다.</td>
+    </tr>
+  </tbody>
+</table>
+
+## 디자인
+<figure>
+<img src="/static/images/iasnap-draft-design.webp" alt=""/>
+<figcaption>1차 기획에 맞춰 Figma로 디자인한 이아스냅 홈페이지 시안</figcaption>
+</figure>
+
+앞서 기술한 대로 프로젝트가 2차 기획으로 변경되면서 아쉽지만 디자인도 그에 맞게 수정해야 했습니다.
+1차 기획대로 개발을 어느 정도 진행한 시점에서 시간이 지체된 상황이었기 때문에
+UI는 1차 디자인처럼 Figma로 하는 대신 오픈소스 협업 툴인 [tldraw](https://www.tldraw.com/)로 간단히 그려 시간을 줄일 수 있었습니다.
+<figure>
+<img src="/static/images/iasnap-second-design.webp" alt=""/>
+<figcaption>tldraw로 간단히 그린 2차 디자인</figcaption>
+</figure>
+
+## 아키텍처
+<figure>
+<img src="/static/images/iasnap-architecture.webp" alt=""/>
+<figcaption>Next.Nav로 분석한 이아스냅 구조</figcaption>
+</figure>
+VS Code 플러그인인 [NEXT.NAV](https://marketplace.visualstudio.com/items?itemName=NextNav.NextNav)를 이용해 Next.js 프로젝트의 구조를 그래프로 간단히 나타내면 위와 같습니다.
+app 폴더 메인 페이지의 로직은 Supabase DB에서 데이터를 페칭하는 getImages 함수를 app/page.tsx에서 호출하며 시작됩니다. 
+호출하여 받아온 데이터를 PageContent 클라이언트 컴포넌트에 프로퍼티로 전달하면 상태 값에 담아
+Search, Select, Themes 컴포넌트에서 발생하는 이벤트에 따라 필터링하여 Images로 렌더링합니다.
+
+
+## 스택
+### YARN vs PNPM
+'일을 하기 위한 일'에 드는 시간을 줄이려면 목수가 허리춤에 차는 든든한 연장과 같은 툴을 잘 활용하는 것도 중요한 것 같습니다.
+패키지 매니저가 그런 툴 중 하나이니 환경 세팅, 라이브러리 설치 시간을 줄일 수 있는 선택지를 늘리고자 PNPM을 써보기로 했습니다. 
+NPM 사용 중 YARN을 만났을 때 느꼈던 속이 뻥 뚫리는 시원함을 PNPM을 만나며 다시 한번 느꼈습니다.
+수치로 알려진 것처럼 체감 속도 또한 굉장히 빨랐습니다.
+물론 NPM에서 생성된 lock 파일을 지원하지 않는 등 호환성 관련 문제점이 생길 수도 있다지만
+소규모 신규 프로젝트에서는 그 문제점을 상쇄할 정도로 속도가 주는 매력이 컸습니다.
+
+### Next.js 12에서 Next.js 13으로
+1차 기획을 Next.js 12 버전으로 구현 중인 상태에서 2차 기획으로 바뀌었을 때는 Next.js 13 버전을 프로덕트로 배포해도 안정적이라고 보는 시각이 늘어나던 시점이었습니다. 
+프로젝트를 처음부터 다시 시작해야 하는 상황이고 page 폴더 기반 12 버전도 언젠가 레거시가 되어 13 버전으로 이전하게 될 거라면 차라리 애초에 13 버전으로 만드는 게 낫다고 판단했습니다.
+13 버전에서 바뀐 사항을 익히는 러닝 커브가 시간 대비 낮진 않았지만 마침 Next.js 공식 문서 한국어 번역에 기여하게 되면서 학습 효과가 배가 되기도 했습니다.
+
+### Supabase
+이아스냅은 이미 블로그, 인스타그램 등으로 홍보 중인 상태에서 홈페이지는 부가적인 용도로 운영될 계획이었기에 서버 관리비 예산을 최소화하는 게 목표였습니다.
+예산에 맞는 스택을 찾던 중 Supabase라는 DB를 발견했고 스토리지 1GB, 데이터베이스 500MB, 대역폭 5GB까지 무료 플랜 안에서 사용할 수 있어서
+간단한 웹사이트 맞춤용으로 제격이었습니다.
+또 클라우드에서 호스팅을 해서 관리, 구축 걱정 없이 쓸 수 있었고 RESTful API를 자동 생성해주기에 데이터를 간단히 조회할 수 있다는 장점이 있어 선택하게 됐습니다.
+
+### Vercel
+Vercel을 서버로 선택한 것도 비용이 가장 큰 이유였습니다. 대역폭 100GB까지 무료 사용, Git으로 배포 시 CI/CD를 자동화하며
+서버리스 함수, 웹 분석, 커뮤니티 지원 등이 가능하다는 장점이 있어
+Vercel을 처음 사용하게 됐습니다. 이아스냅의 경우 GitHub 저장소와 연결했고 풀 리퀘스트, 머지 리퀘스트를 통해 간단하게 배포할 수 있었습니다.
+
+### Framer Motion
+1차 개발 당시엔 GSAP을 이용해 페이지 전체에 Smooth Scrolling을 구현했지만 사용자의 UX에 좋지 않을 수 있다는 글을 우연히 발견했습니다.
+스크롤 속도를 늦춰 화면이 부드럽게 넘어가는 효과가 디자인면에서 매력적이라 생각해 선택했지만
+사용자의 예상 동작을 벗어나 스크롤 사용을 제한하는 스크롤 납치(Scroll hijacking) 행위로 보는 시각도 있었던 겁니다.
+1차 개발의 경우엔 업체와 메뉴를 소개하는 랜딩 페이지였기 때문에 부드럽고 직관적인 탐색에 Smooth Scrolling이 적당했지만
+2차 개발에선 메인 페이지가 이미지 갤러리였기에 역효과일 수 있다는 판단에 Framer Motion을 이용해
+GSAP보다 가볍고 선언적 구문으로 간단하게 애니메이션을 적용할 수 있었습니다.
+
+## 문제 해결
+### 폰트 최적화
+<video controls width="100%" height="auto" className="max-w-[500px]">
+  <source src="/static/videos/iasnap-font-bf-opt.webm" type="video/webm"/>
+  <source src="/static/videos/iasnap-font-bf-opt.mp4" type="video/mp4"/>
+</video>
+
+문제  
+
+폰트를 최적화하기 전엔 Network 패널의 throttle 설정을 'Fast 3G'로 선택 후 메인 페이지를 새로고침 하면
+위 영상처럼 폰트가 바뀌면서 깜박이며 요소가 밀리는 사용성 문제가 있었습니다.
+
+해결
+1. 폰트 포맷 변경으로 파일 크기 줄여 다운로드 속도 늘리기  
+로컬 폰트 파일 크기가 모두 합쳐 1000kB가 넘고 로드 시간이 13초나 걸리는 문제의 원인을 해결하기 위해 파일 크기를 줄여 다운로드 시간을 단축하기로 했습니다.
+폰트 포맷 중 파일 크기가 OTF보다 작은 WOFF, WOFF2로 변환 후 브라우저 호환성을 고려해 src 속성에 함께 나열했습니다. 
+```
+@font-face {
+  font-family: 'GmarketSansMedium';
+  src: url('./fonts/GmarketSansMedium.woff2') format('woff2'),
+      url('./fonts/GmarketSansMedium.woff') format('woff'),
+      url('./fonts/GmarketSansMedium.otf') format('otf');
+  font-weight: 500;
+  font-style: normal;
+  font-display: block;
+}
+```
+또 메인 페이지에 필요한 폰트만을 로드한 결과 아래 이미지처럼 용량은 1118kB에서 약 398kB, 로드 시간은 약 3초로 줄었습니다.
+
+<figure>
+    <img src="/static/images/iasnap-font-bf-opt.webp" alt="" style={{display:"inline-block"}}/>
+    <img src="/static/images/iasnap-font-af-opt.webp" alt="" style={{display:"inline-block"}}/>
+    <figcaption>폰트 최적화 전후 네트워크 탭</figcaption>
+</figure>
+
+2. Fontfaceobserver 라이브러리로 폰트 다운로드 완료 시점을 알아내 스켈레톤 UI를 대체하기  
+로컬 폰트 로드가 완료될 때까지 기본 폰트를 보여주는 대신 스켈레톤 UI를 보여주다가 Fontfaceobserver 라이브러리로 폰트 로드 완료 시점을 알아내
+UI 요소와 함께 로컬 폰트 텍스트를 렌더링했고 그 결과 자연스러운 전환이 가능했습니다. 
+```
+useEffect(() => {
+    const font = new FontFaceObserver("GmarketSansMedium");
+    font.load(null, 10000).then(function () {
+      setIsFontLoaded(true);
+    });
+  }, []);
+
+return (
+   {isFontLoaded? <>
+        <Search
+          searchKeywords={searchKeywords}
+          searchInputHandler={searchInputHandler}
+          searchSubmitHandler={searchSubmitHandler}
+        />
+        <div 
+          className="z-10 w-full text-sm flex flex-row items-center"
+        >
+          <Select selectChangeHandler={selectChangeHandler}/>
+          <Themes data={themes} themesClickHandler={themesClickHandler}/>
+        </div>
+      </> : <PlaceholderTop/>}
+)
+```
+<video controls width="100%" height="auto" className="max-w-[500px]">
+  <source src="/static/videos/iasnap-font-af-opt.webm" type="video/webm"/>
+  <source src="/static/videos/iasnap-font-af-opt.mp4" type="video/mp4"/>
+</video>
+
+### 접근성
+![contrast-ratio-warning](/static/images/contrast-ratio-warning.webp)
+
+이아스냅은 홈페이지 제작 전부터 로고와 브랜드 컬러가 이미 베이지, 핑크톤으로 정해진 상태여서 그에 맞춰 배경색과 포인트 컬러도 정했습니다.
+하지만 로고 색에 가까운 색으로 폰트 색을 지정했더니 Lighthouse 접근성 항목에서 배경 색-폰트 색 대비율이 WCAG 기준인 4.5:1(작은 글자)에 안 맞다는 경고를 받았죠.
+[자료](https://dequeuniversity.com/rules/axe/4.8/color-contrast)를 참고해 대비율이 높은 색으로 바꿔야 했습니다.
+<figure>
+    <img src="/static/images/color-contrast-analyzer-bf.webp" alt="" style={{display:"inline-block"}}/>
+    <img src="/static/images/color-contrast-analyzer-af.webp" alt="" style={{display:"inline-block"}}/>
+    <figcaption>색상 대비 분석기로 계산 후 WCAG 접근성 기준과 비교한 배경 색-폰트 색 변경 전후 대비율</figcaption>
+</figure>
+
+![contrast-ratio-warning](/static/images/fontcolor-bfaf.webp)
+
+브랜드 컬러와 최대한 유사하게 폰트 색을 유지하려던 기획에서 벗어나야 했기에 디자인과 접근성을 두고 고민했지만 
+사용자 입장에서 디자인보다 접근성이 우선한다는 원칙을 지키기로 하여 메인 폰트 색을 변경한 결과 
+캐러셀 라이브러리 자체 이슈를 제외하고는 접근성 항목에서 문제가 발견되지 않았습니다.
+
+### 마치며
