@@ -67,22 +67,15 @@ module.exports = () => {
     },
     images: {
       domains: ['picsum.photos'],
-    },
-    async headers() {
-      return [
-        {
-          source: '/(.*)',
-          headers: securityHeaders,
-        },
-      ]
+      unoptimized: true,
     },
     webpack: (config, options) => {
       config.module.rules.push({
         test: /\.svg$/,
         use: ['@svgr/webpack'],
       })
-
       return config
     },
+    output: 'export',
   })
 }
