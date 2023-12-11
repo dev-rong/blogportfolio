@@ -1,14 +1,15 @@
 /** @type {import("pliny/config").PlinyConfig } */
 const siteMetadata = {
-  title: 'Chorong Lee Portfolio',
+  title: 'Chorong Lee Portfolio & Blog',
   author: 'Chorong Lee',
   headerTitle: '',
-  description: 'Chorong Lee Portfolio & Blog',
+  description: 'Hello, this is Frontend Engineer CR',
   language: 'ko-KR',
   theme: 'system', // system, dark or light
-  siteUrl: 'https://tailwind-nextjs-starter-blog.vercel.app',
-  siteRepo: 'https://github.com/timlrx/tailwind-nextjs-starter-blog',
-  siteLogo: '/static/images/logo.png',
+  siteUrl: 'https://dev-rong.github.io',
+  siteRepo: 'https://github.com/dev-rong/dev-rong.github.io',
+  siteLogo: '/static/images/portfolio-logo.png',
+  socialBanner: '/static/images/portfolio-light.svg',
   email: 'dev.ronggg@gmail.com',
   github: 'https://github.com/dev-rong',
   locale: 'ko-KR',

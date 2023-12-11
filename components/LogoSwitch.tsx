@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { useTheme } from 'next-themes'
-import LightLogo from '@/data/portfolio-light.svg'
-import DarkLogo from '@/data/portfolio-dark.svg'
+import LightLogo from '../public/static/images/portfolio-light.svg'
+import DarkLogo from '../public/static/images/portfolio-dark.svg'
 
 const LogoSwitch = () => {
   const [mounted, setMounted] = useState(false)

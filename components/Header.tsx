@@ -1,7 +1,5 @@
 import siteMetadata from '@/data/siteMetadata'
 import headerNavLinks from '@/data/headerNavLinks'
-// import Logo from '@/data/portfolio_logo_150x50.svg'
-// import Logo from '@/data/portfolio-dark.svg'
 import LogoSwitch from './LogoSwitch'
 import Link from './Link'
 import MobileNav from './MobileNav'
