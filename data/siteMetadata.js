@@ -1,9 +1,9 @@
 /** @type {import("pliny/config").PlinyConfig } */
 const siteMetadata = {
-  title: 'Chorong Lee Portfolio & Blog',
+  title: 'Portfolio',
   author: 'Chorong Lee',
   headerTitle: '',
-  description: 'Hello, this is Frontend Engineer CR',
+  description: '안녕하세요, 프론트엔드 개발자 이초롱입니다',
   language: 'ko-KR',
   theme: 'system', // system, dark or light
   siteUrl: 'https://dev-rong.github.io',
